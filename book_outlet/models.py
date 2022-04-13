@@ -10,7 +10,11 @@ class Book(models.Model):
         validators=[MinValueValidator(1), MaxValueValidator(5)])
     author = models.CharField(null=True, max_length=100)
     is_bestselling = models.BooleanField(default=False)
-    slug = models.SlugField(default='', null =False, db_index=True) # slug indentifier in search bar add db_index to make searching better
+    slug = models.SlugField(default='', blank=True,
+    # editable= False,   needs to be removed for prepopulated fields to work
+    null=False, db_index=True) # slug indentifier in search bar add db_index to make searching better
+    #arg configurations here also apply to the admin page
+    
 
     def __str__(self):
         return f"{self.title} ({self.rating})"
@@ -19,8 +23,10 @@ class Book(models.Model):
     def get_absolute_url(self):
         return reverse("book_detail", args=[self.slug])
 
-    # override save to add slug identifier automatically
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
-        super().save(*args, **kwargs)
+
+# override save to add slug identifier automatically
+    # def save(self, *args, **kwargs):
+    #     self.slug = slugify(self.title)
+    #     super().save(*args, **kwargs)
+#no longer need this overridden function to add slug thanks to admin page
     
